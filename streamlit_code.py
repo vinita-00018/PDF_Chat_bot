@@ -47,7 +47,7 @@ def process_file(file_path: str, question: str):
 
     vectordb = Chroma.from_documents(
         docs,
-        embedding=OpenAIEmbeddings(),
+        embedding=OpenAIEmbeddings,
         persist_directory="./data"
     )
     retriever = vectordb.as_retriever(search_kwargs={"k": 3})
@@ -113,4 +113,5 @@ if st.session_state.chat_history:
 if st.button("🗑️ Clear Chat"):
     st.session_state.chat_history = []
     st.success("Chat history cleared!")
+
 
