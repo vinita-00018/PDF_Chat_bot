@@ -1,15 +1,13 @@
-streamlit
-python-docx
-langchain
-langchain-community
-langchain-openai
-chromadb
-tiktoken
-openai
-chromadb-pysqlite3
-pypdf
+streamlit==1.35.0
+python-docx==1.1.0
+pypdf==4.2.0
 
+langchain==0.2.3
+langchain-community==0.2.3
+langchain-openai==0.1.7
 
+chromadb==0.4.24
+chromadb-pysqlite3==0.4.24
 
-
-
+tiktoken==0.7.0
+openai==1.30.0
