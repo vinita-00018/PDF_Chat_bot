@@ -39,31 +39,73 @@ def extract_text(file_path: str):
         return None
 
 
+# def process_file_with_groq(file_path: str, question: str):
+#     """Send file content + question as prompt to Groq."""
+#     file_name = os.path.basename(file_path)
+#     file_text = extract_text(file_path)
+
+#     if not file_text:
+#         return {file_name: "❌ Unsupported or empty file."}
+
+#     full_prompt = f"""
+# You are an assistant. The user has uploaded a file named {file_name}.
+# Here is the file content:
+
+# {file_text[:4000]}  # limit to avoid token overflow
+
+# Now answer the following question based only on the file content:
+# {question}
+# """
+
+#     response = st.session_state.groq_client.chat.completions.create(
+#         model=MODEL,
+#         messages=[{"role": "user", "content": full_prompt}],
+#     )
+
+#     return {file_name: response.choices[0].message.content}
+
+
 def process_file_with_groq(file_path: str, question: str):
-    """Send file content + question as prompt to Groq."""
+    """Send file content + question as prompt to Groq.
+       If answer not in file, fallback to Groq general knowledge."""
     file_name = os.path.basename(file_path)
     file_text = extract_text(file_path)
 
     if not file_text:
         return {file_name: "❌ Unsupported or empty file."}
 
-    full_prompt = f"""
-You are an assistant. The user has uploaded a file named {file_name}.
-Here is the file content:
+    # Step 1: Ask Groq strictly based on file
+    file_prompt = f"""
+You are a helpful assistant. The user has uploaded a file named {file_name}.
+Answer the question using ONLY the following file content:
 
-{file_text[:4000]}  # limit to avoid token overflow
+{file_text[:4000]}  # keep within context limit
 
-Now answer the following question based only on the file content:
-{question}
+Question: {question}
+
+If the answer is not explicitly found in the file, reply ONLY with: "NOT_FOUND"
 """
 
     response = st.session_state.groq_client.chat.completions.create(
         model=MODEL,
-        messages=[{"role": "user", "content": full_prompt}],
+        messages=[{"role": "user", "content": file_prompt}],
     )
+    answer = response.choices[0].message.content.strip()
 
-    return {file_name: response.choices[0].message.content}
+    # Step 2: If not found in file → fallback to Groq general knowledge
+    if answer == "NOT_FOUND":
+        general_prompt = f"""
+The user asked: {question}.
+The uploaded file does not contain the answer. 
+Please provide a general, well-explained answer based on your own knowledge.
+"""
+        response = st.session_state.groq_client.chat.completions.create(
+            model=MODEL,
+            messages=[{"role": "user", "content": general_prompt}],
+        )
+        answer = response.choices[0].message.content.strip()
 
+    return {file_name: answer}
 
 # ================== STREAMLIT UI ==================
 st.set_page_config(page_title="Groq Multi-File Chat-Bot", layout="wide")
@@ -117,5 +159,6 @@ if st.session_state.chat_history:
 if st.button("🗑️ Clear Chat"):
     st.session_state.chat_history = []
     st.success("Chat history cleared!")
+
 
 
