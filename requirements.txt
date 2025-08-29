@@ -6,8 +6,9 @@ langchain-openai
 chromadb
 tiktoken
 openai
-pysqlite3-binary
+pysqlite3
 pypdf
+
 
 
 
