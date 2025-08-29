@@ -11,7 +11,10 @@ from langchain.chains import RetrievalQA
 # os.environ["OPENAI_API_KEY"] = "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"
 
 
-embeddings = OpenAIEmbeddings(openai_api_key=st.secrets["OPENAI_API_KEY"])
+os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+
+# now initialize embeddings without passing key directly
+embeddings = OpenAIEmbeddings()
 MODEL = "gpt-4o-mini"
 
 # ================== MEMORY STORE ==================
@@ -113,5 +116,6 @@ if st.session_state.chat_history:
 if st.button("🗑️ Clear Chat"):
     st.session_state.chat_history = []
     st.success("Chat history cleared!")
+
 
 
