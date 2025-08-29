@@ -68,7 +68,7 @@ Now answer the following question based only on the file content:
 # ================== STREAMLIT UI ==================
 st.set_page_config(page_title="Groq Multi-File Chat-Bot", layout="wide")
 
-st.title("💬 Multi-File Chat-Bot)")
+st.title("💬 Multi-File Chat-Bot")
 st.write("Upload files (PDF, TXT, CSV, DOCX) and ask questions using Groq API directly.")
 
 # --- Initialize Session State ---
@@ -117,4 +117,5 @@ if st.session_state.chat_history:
 if st.button("🗑️ Clear Chat"):
     st.session_state.chat_history = []
     st.success("Chat history cleared!")
+
 
