@@ -1,9 +1,5 @@
 streamlit
-python-docx
-langchain==0.2.14
-langchain-openai==0.1.22
-langchain-community==0.2.12
-openai>=1.40.0
-chromadb
-tiktoken
+docx
+langchain_community
 pypdf
+groq
