@@ -1,5 +1,6 @@
 streamlit
-docx
 langchain_community
 pypdf
 groq
+python-docx
+
